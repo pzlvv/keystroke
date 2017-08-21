@@ -12,14 +12,18 @@ public class MainFrame extends JFrame{
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
         Font font = new Font("SansSerif", Font.BOLD, 20);
-        JLabel prompt = new JLabel("Where is the bug");
-        JTextField tf = new TextSampler("Where is the bug");
+        JLabel prompt1 = new JLabel("Type the following sentence ended with ENTER key");
+        JLabel prompt2 = new JLabel("          Where is the fox");
+        JTextField tf = new TextSampler("Where is the fox");
         tf.setColumns(10);
         tf.setFont(font);
 
+        prompt2.setFont(font);
+
         Panel panel = new Panel();
         panel.add(tf);
-        contentPane.add(prompt);
+        contentPane.add(prompt1);
+        contentPane.add(prompt2);
         //contentPane.add(tf);
         contentPane.add(panel);
 
