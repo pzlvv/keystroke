@@ -1,10 +1,13 @@
 package org.pzlvv.widgets;
 
+import org.pzlvv.Main;
+
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Timestamp;
@@ -13,8 +16,19 @@ import java.util.List;
 import java.util.UUID;
 
 public class TextSampler extends JTextField {
+
     public TextSampler(String target) {
-        new File("data").mkdir();
+        java.net.URL url = Main.class.getProtectionDomain().getCodeSource().getLocation();
+        try {
+            basePath = java.net.URLDecoder.decode(url.getPath(), "utf-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (basePath.endsWith(".jar"))
+            basePath = basePath.substring(0, basePath.lastIndexOf("/") + 1);
+        java.io.File file = new java.io.File(basePath);
+        basePath = file.getAbsolutePath();
+        new File(Paths.get(basePath, "data").toString()).mkdir();
         this.target = target;
         remain = target;
         this.addKeyListener(new KeyListener() {
@@ -39,7 +53,6 @@ public class TextSampler extends JTextField {
                     String item = "%d %d 0";
                     long curTime = System.currentTimeMillis();
                     records.add(String.format(item, curTime, e.getKeyCode()));
-                    System.out.println(e.getKeyChar()+" 0");
                 }
             }
 
@@ -47,8 +60,9 @@ public class TextSampler extends JTextField {
             public void keyReleased(KeyEvent e) {
                 String item = "%d %d 1";
                 long curTime = System.currentTimeMillis();
-                records.add(String.format(item, curTime, e.getKeyCode()));
-                System.out.println(e.getKeyChar()+" 1");
+                if (records.size() > 0) {
+                    records.add(String.format(item, curTime, e.getKeyCode()));
+                }
                 if (remain.length() == 0 && e.getKeyCode() == KeyEvent.VK_ENTER) {
                     submit();
                 }
@@ -65,7 +79,7 @@ public class TextSampler extends JTextField {
     }
 
     private void submit() {
-        File file = new File(Paths.get("data", sampleTimes + ".log").toString());
+        File file = new File(Paths.get(basePath, "data", sampleTimes + ".log").toString());
         try {
             PrintStream ps = new PrintStream(file);
             for (String record : records) {
@@ -82,7 +96,7 @@ public class TextSampler extends JTextField {
             remain = target;
             records.clear();
         } else {
-            JOptionPane.showMessageDialog(null, "Thanks for cooperation, package and send the data directory to pz.pzlvv@gmail.com." );
+            JOptionPane.showMessageDialog(null, "Thanks for cooperation, package the data directory and send it to pz.pzlvv@gmail.com." );
             System.exit(0);
         }
     }
@@ -90,6 +104,7 @@ public class TextSampler extends JTextField {
     private String remain;
     private String target;
     private int sampleTimes = 20;
+    private String basePath;
     private List<String> records = new ArrayList<>();
 
 }
