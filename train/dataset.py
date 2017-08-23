@@ -71,6 +71,7 @@ def parse_user_data(dir):
     features = []
     for entry in os.scandir(dir):
         if entry.is_file():
+            print(entry.name)
             features.append(extract_features(filter_data(entry.path)))
     return features
 
@@ -81,6 +82,7 @@ def read_data(dir):
     Y = []
     for entry in os.scandir(dir):
         if not entry.name.startswith('.') and entry.is_dir():
+            print(entry.name)
             user_data = parse_user_data(entry.path)
             X.extend(user_data)
             users.append((entry.name, len(user_data)))

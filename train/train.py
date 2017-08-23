@@ -4,7 +4,7 @@ import os
 # import numpy as np
 
 
-N = 40
+N = 100
 
 # mnist = input_data.read_data_sets("MNIST_data", one_hot=True)
 batch = read_data('dataset')

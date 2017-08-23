@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type=text/javascript>
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        </script>
+        <script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='handler.js') }}"></script>
+    </head>
+    <body>
+        <form>
+            <fieldset>
+                <label for="theText">Enter some text</label>
+                <input id="theText" type="text" />
+            </fieldset>
+        </form>
+        <div><b>Output Text</b>: <span id="theOutputText"></span>
+        </div>
+        <div><b>keydown</b> event.which: <span id="theOutputKeyDown"></span>
+        </div>
+        <div><b>keyup</b> event.which: <span id="theOutputKeyUp"></span>
+        </div>
+        <div><b>keypress</b> event.which: <span id="theOutputKeyPress"></span>
+        </div>
+        <div><b>focus</b>  <span id="theOutputFocusOut"></span>
+        </div>
+        <div>
+            <p>Keydown: triggers on when you press a key and it returns the scan-code from the keyboard. (<em>A</em> and <em>a</em> both return 65)</p>
+            <p>Keypress: triggers after keydown, and it returns the charcode.
+            <br />(<em>A</em> returns 65 and <em>a</em> returns 97)
+            <br />But this only works reliably for character codes (not Esc, Home, End, Arrows etc. and the results are browser dependent).
+            <p>Article: <a href="https://www.quirksmode.org/js/keys.html">Detecting Keys - [quirksmode]</a> 
+        </div>
+    </body>
+</html>

@@ -4,13 +4,14 @@ import os
 # import numpy as np
 
 
-N = 40
+N = 20
 
 # mnist = input_data.read_data_sets("MNIST_data", one_hot=True)
-batch = read_data('dataset')
+batch = read_data('testset')
 
 feats = len(batch[0][0])
-K = len(batch[1][0])
+# K = len(batch[1][0])
+K = 5
 
 x = tf.placeholder(tf.float32, shape=[None, feats])
 y = tf.placeholder(tf.float32, shape=[None, K])
@@ -20,6 +21,7 @@ b = tf.Variable(tf.zeros([1, K]))
 
 pred = tf.matmul(x, W) + b
 correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(pred, 1))
+prediction = tf.arg_max(pred, 1)
 # correct_prediction = tf.equal(tf.argmax(y), tf.argmax(pred))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
@@ -34,4 +36,5 @@ with tf.Session() as sess:
     saver.restore(sess, os.path.join(
         os.path.dirname(os.path.realpath(__file__)), 'model', 'model.ckpt'))
 
-    print(accuracy.eval(feed_dict={x: batch[0], y: batch[1]}))
+    print(pred.eval(feed_dict={x: batch[0]}))
+    print(prediction.eval(feed_dict={x: batch[0]}))
