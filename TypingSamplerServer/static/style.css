@@ -1,0 +1,15 @@
+#theText {
+    font-size: 200%;
+    font-weight: bold;
+}
+
+#warning {
+    color: #F00;
+    font-size: 80%;
+    font-weight: bold;
+}
+
+#info {
+    color: rgb(34, 177, 76);
+    font-weight: bold;
+}

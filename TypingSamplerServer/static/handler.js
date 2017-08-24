@@ -1,17 +1,13 @@
 $(function () {
     var theText = $("#theText");
-    var theOutputText = $("#theOutputText");
-    var theOutputKeyPress = $("#theOutputKeyPress");
-    var theOutputKeyDown = $("#theOutputKeyDown");
-    var theOutputKeyUp = $("#theOutputKeyUp");
-    var theOutputFocusOut = $("#theOutputFocusOut");
     var target = "Where is the fox";
     var remain = target;
     var records = []
+    var count = 0;
 
-    theText.keydown(function (event) {
-        keyReport(event, theOutputKeyDown);
+    theText.keydown(function(event) {
         if (remain.length == 0  && event.keyCode != 13) {
+            alert("Sample failed due to wrong input, clear to retype");
             retype();
         } else {
             var curTime = Date.now();
@@ -19,10 +15,10 @@ $(function () {
         }
     });
 
-    theText.keypress(function (event) {
-        keyReport(event, theOutputKeyPress);
+    theText.keypress(function(event) {
         if (remain.length > 0) {
             if (remain[0] != event.key) {
+                alert("Sample failed due to wrong input, clear to retype");
                 retype();
             } else {
                 remain = remain.substring(1);
@@ -31,9 +27,7 @@ $(function () {
     });
 
 
-    theText.keyup(function (event) {
-        keyReport(event, theOutputKeyUp);
-        console.log(event.keyCode);
+    theText.keyup(function(event) {
         var curTime = Date.now();
         if (records.length > 0) {
             records.push(curTime + ' ' + event.keyCode + ' ' + 1)
@@ -43,33 +37,41 @@ $(function () {
         }
     });
 
-    theText.focusout(function (event) {
-        theOutputFocusOut.html(".focusout() fired!");
-        $("#theText").val("");
+    theText.focusout(function(event) {
+        retype();
     });
 
-    theText.focus(function (event) {
-        theOutputFocusOut.html(".focus() fired!");
-        $("#theText").val("");
+    theText.focus(function(event) {
+        retype();
+        if ($('#theUser').val() == "") {
+            $('#theUser').focus();
+            $('#warning').text('Input your username');
+        }
+    });
+
+    $('#theUser').on('input', function() {
+        if ($('#theUser').val() == "") {
+            $('#warning').text('Input your username');
+        } else {
+            $('#warning').text('');
+        }
     });
 
     function retype() {
         $("#theText").val("");
         remain = target;
         records = [];
-        alert("Sample failed due to wrong input, clear to retype");
     }
 
     function submit() {
-        alert("Submited");
-        $("#theText").val("");
-        remain = target;
+        $('#info').text("Sending...");
         text = records.join("\n")
-        records = [];
+        username = $('#theUser').val();
         param = {
-                "user": "pz",
+                "user": username,
                 "data": text
         }
+        retype();
         $.ajax({
             url: $SCRIPT_ROOT + '/dataset',
             type: "POST",
@@ -77,37 +79,15 @@ $(function () {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function(data) {
-                console.log(data)
+                ++count;
+                if (count == 1) {
+                    var infoContent = "Sending success, you submitted for " + count + " time";
+                } else {
+                    var infoContent = "Sending success, you submitted for " + count + " times";
+                }
+                $('#info').text(infoContent);
             }
         });
     }
 
-    function keyReport(event, output) {
-        // catch enter key = submit (Safari on iPhone=10)
-        if (event.which == 10 || event.which == 13) {
-            event.preventDefault();
-        }
-        // show event.which
-        output.html(event.which + "&nbsp;&nbsp;&nbsp;&nbsp;event.keyCode " + event.keyCode);
-        // report invisible keys  
-        switch (event.which) {
-            case 0:
-                output.append("event.which not sure");
-                break;
-            case 13:
-                output.append(" Enter");
-                break;
-            case 27:
-                output.append(" Escape");
-                break;
-            case 35:
-                output.append(" End");
-                break;
-            case 36:
-                output.append(" Home");
-                break;
-        }
-        // show field content
-        theOutputText.text(theText.val());
-    }
 });
