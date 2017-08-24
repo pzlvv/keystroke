@@ -67,11 +67,11 @@ $(function () {
         $('#info').text("Sending...");
         text = records.join("\n")
         username = $('#theUser').val();
+	theText.prop('disabled', true);
         param = {
                 "user": username,
                 "data": text
         }
-        retype();
         $.ajax({
             url: $SCRIPT_ROOT + '/dataset',
             type: "POST",
@@ -86,6 +86,9 @@ $(function () {
                     var infoContent = "Sending success, you submitted for " + count + " times";
                 }
                 $('#info').text(infoContent);
+		theText.prop('disabled', false);
+		theText.focus();
+		retype();
             }
         });
     }
