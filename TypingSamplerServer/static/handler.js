@@ -81,7 +81,7 @@ $(function () {
             success: function(data) {
                 ++count;
                 if (count == 1) {
-                    var infoContent = "Sending success, you submitted for " + count + " time";
+                    var infoContent = "Sending success, you submitted " + count + " time";
                 } else {
                     var infoContent = "Sending success, you submitted for " + count + " times";
                 }
