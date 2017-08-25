@@ -1,17 +1,21 @@
 from dataset import read_data
 import tensorflow as tf
 import os
+import pickle
 # import numpy as np
 
+with open('userinfo', 'rb') as f:
+    username_list = pickle.load(f)
 
-N = 20
 
 # mnist = input_data.read_data_sets("MNIST_data", one_hot=True)
-batch = read_data('testset')
+batch, _ = read_data('testset')
+
+N = len(batch[0])
 
 feats = len(batch[0][0])
 # K = len(batch[1][0])
-K = 5
+K = len(username_list)
 
 x = tf.placeholder(tf.float32, shape=[None, feats])
 y = tf.placeholder(tf.float32, shape=[None, K])
@@ -37,4 +41,8 @@ with tf.Session() as sess:
         os.path.dirname(os.path.realpath(__file__)), 'model', 'model.ckpt'))
 
     print(pred.eval(feed_dict={x: batch[0]}))
-    print(prediction.eval(feed_dict={x: batch[0]}))
+    result = prediction.eval(feed_dict={x: batch[0]})
+    print(result)
+
+for i in result:
+    print(username_list[i])

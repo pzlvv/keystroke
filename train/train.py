@@ -1,14 +1,17 @@
 from dataset import read_data
 import tensorflow as tf
 import os
+import pickle
 # import numpy as np
 
 
-N = 100
+batch, username_list = read_data('dataset')
 
-# mnist = input_data.read_data_sets("MNIST_data", one_hot=True)
-batch = read_data('dataset')
+with open('userinfo', 'wb') as f:
+    pickle.dump(username_list, f)
 
+
+N = batch[0]
 feats = len(batch[0][0])
 K = len(batch[1][0])
 
@@ -20,7 +23,6 @@ b = tf.Variable(tf.zeros([1, K]))
 
 pred = tf.matmul(x, W) + b
 correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(pred, 1))
-# correct_prediction = tf.equal(tf.argmax(y), tf.argmax(pred))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 cross_entropy = tf.reduce_mean(

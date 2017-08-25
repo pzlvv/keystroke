@@ -7,15 +7,21 @@ D = []
 def filter_data(filepath):
     filtered = []
     with open(filepath) as f:
+        key_status = {}
         lastline = [None, None, None]
         for line in f:
             line = [int(i) for i in line.strip().split()]
             if line[1] == 16 and line[2] == 1 and \
                     lastline[1] == 16 and lastline[2] == 0:
                 filtered.pop(-1)
+            elif line[1] != 16 and (line[1] > 90 or line[1] < 65):
+                continue
+            elif line[1] in key_status and line[2] == key_status[line[1]]:
+                continue
             else:
                 filtered.append(line)
                 lastline = line
+                key_status[line[1]] = line[2]
     return filtered
 
 
@@ -77,6 +83,7 @@ def parse_user_data(dir):
 
 
 def read_data(dir):
+    username_list = []
     users = []
     X = []
     Y = []
@@ -91,7 +98,8 @@ def read_data(dir):
     for user, data_count in users:
         one_hot = [0] * len(users)
         one_hot[index] = 1
-        index += 1
         for _ in range(data_count):
             Y.append(one_hot)
-    return [X, Y]
+        username_list.append(user)
+        index += 1
+    return [X, Y], username_list
